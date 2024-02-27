@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Stock APP</title>
+</head>
+<body style="font-family: 'Work Sans', sans-serif;">
+
+    <label for="symbolInput">Enter Stock Symbol:</label>
+    <input type="text" id="symbolInput" placeholder="Enter Symbol Here">
+    <button onclick="fetchStockPrice()">
+        <i class="fas fa-search"></i>
+    </button>
+    <div id="priceDisplay"></div>
+
+    <script src="https://kit.fontawesome.com/381bb1b78b.js" crossorigin="anonymous"></script>
+
+    <script>
+        function fetchStockPrice() {
+            const APIKey = 'GHHAQNPT5ZA46NR2';
+            const symbolInput = document.getElementById('symbolInput');
+            const symbol = symbolInput.value.toUpperCase(); // Convert to uppercase for consistency
+
+            fetch(`https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=${symbol}&apikey=${APIKey}`)
+                .then(response => response.json())
+                .then(json => {
+                    const priceDisplay = document.getElementById('priceDisplay');
+                    if (json['Global Quote'] && json['Global Quote']['05. price']) {
+                        const price = parseFloat(json['Global Quote']['05. price']);
+                        priceDisplay.textContent = `Current Price for ${symbol}: $${price.toFixed(2)}`;
+                    } else {
+                        priceDisplay.textContent = `Invalid or missing data for ${symbol}.`;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching data from Alpha Vantage:', error);
+                });
+        }
+    </script>
+
+</body>
+</html>
